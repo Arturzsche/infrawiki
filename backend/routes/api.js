@@ -83,12 +83,17 @@ router.put('/estagiarios/:id/projetos/:projetoId', async (req, res) => {
   try {
     const est = await Estagiario.findById(req.params.id);
     const idx = est.projetos.findIndex(p => p.id === req.params.projetoId);
+    
     if (idx !== -1) {
-      est.projetos[idx] = { 
-        ...est.projetos[idx], 
-        ...req.body,
-        orientacoesProjeto: req.body.orientacoesProjeto !== undefined ? req.body.orientacoesProjeto : est.projetos[idx].orientacoesProjeto
-      };
+      est.projetos[idx].tipo = req.body.tipo !== undefined ? req.body.tipo : est.projetos[idx].tipo;
+      est.projetos[idx].titulo = req.body.titulo !== undefined ? req.body.titulo : est.projetos[idx].titulo;
+      est.projetos[idx].data = req.body.data !== undefined ? req.body.data : est.projetos[idx].data;
+      est.projetos[idx].desc = req.body.desc !== undefined ? req.body.desc : est.projetos[idx].desc;
+      est.projetos[idx].arquivo = req.body.arquivo !== undefined ? req.body.arquivo : est.projetos[idx].arquivo;
+      est.projetos[idx].nomeArquivo = req.body.nomeArquivo !== undefined ? req.body.nomeArquivo : est.projetos[idx].nomeArquivo;
+      est.projetos[idx].status = req.body.status !== undefined ? req.body.status : est.projetos[idx].status;
+      est.projetos[idx].orientacoesProjeto = req.body.orientacoesProjeto !== undefined ? req.body.orientacoesProjeto : est.projetos[idx].orientacoesProjeto;
+      
       est.markModified('projetos');
       await est.save();
     }

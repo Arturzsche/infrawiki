@@ -5,7 +5,7 @@ const EstagiarioSchema = new mongoose.Schema({
   area: String,
   foto: String,
   bio: String,
-projetos: [{
+  projetos: [{
     id: String,
     tipo: String,
     titulo: String,
@@ -17,7 +17,6 @@ projetos: [{
       type: String,
       default: 'Em andamento'
     },
-    // ADICIONE ESTA LINHA:
     orientacoesProjeto: String
   }]
 });
