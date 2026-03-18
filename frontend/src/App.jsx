@@ -8,20 +8,25 @@ function App() {
     <Router>
       <div className="flex h-screen bg-slate-50 text-slate-900 font-sans">
         
-        {/* MENU LATERAL */}
         <aside className="w-72 bg-slate-900 text-white flex flex-col shadow-xl">
-          <div className="p-6 border-b border-slate-800">
-            <div className="text-2xl font-black tracking-tight">
-              INFRA<span className="text-blue-400 font-light">WIKI</span>
-            </div>
-            <div className="text-xs text-slate-400 font-medium mt-1">PORTFÓLIO DE MANUTENÇÃO</div>
+          <div className="p-6 flex flex-col items-center border-b border-slate-800 mb-2">
+            <Link to="/" className="group flex flex-col items-center transition-transform hover:scale-105">
+              <img 
+                src="/logo-infrawiki.png" 
+                alt="Logo InfraWiki" 
+                className="w-32 h-auto drop-shadow-md mb-2 group-hover:drop-shadow-lg transition-all" 
+              />
+              <span className="text-[10px] font-bold text-slate-400 tracking-widest uppercase group-hover:text-slate-300 transition-colors text-center">
+                Wiki - Manutenção Predial
+              </span>
+            </Link>
           </div>
           
           <nav className="flex-1 p-4 space-y-2 mt-4">
             <Link to="/" className="flex items-center p-3 rounded-lg hover:bg-slate-800 hover:text-blue-400 transition-all font-medium">
               📊 Visão Geral
             </Link>
-            <div className="pt-4 pb-2 px-3 text-xs font-bold text-slate-500 uppercase tracking-widest text-slate-500">
+            <div className="pt-4 pb-2 px-3 text-xs font-bold text-slate-500 uppercase tracking-widest">
               Colaboradores
             </div>
             <Link to="/equipe" className="flex items-center p-3 rounded-lg hover:bg-slate-800 hover:text-blue-400 transition-all font-medium">
@@ -30,7 +35,6 @@ function App() {
           </nav>
         </aside>
 
-        {/* ÁREA CENTRAL */}
         <main className="flex-1 overflow-y-auto">
           <header className="bg-white h-16 border-b border-slate-200 flex items-center px-8 shadow-sm">
             <span className="font-semibold text-slate-700">Setor de Manutenção Predial</span>
