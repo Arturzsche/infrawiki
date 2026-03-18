@@ -7,11 +7,9 @@ export default function Perfil() {
   const [perfil, setPerfil] = useState(null);
   const fileInputRef = useRef(null);
 
-  // Modais de Perfil
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
 
-  // Modais de Trabalhos
   const [isAddingWork, setIsAddingWork] = useState(false);
   const [isViewingWork, setIsViewingWork] = useState(false);
   const [workToView, setWorkToView] = useState(null);
@@ -20,7 +18,6 @@ export default function Perfil() {
   const [isDeletingWork, setIsDeletingWork] = useState(false);
   const [workToDelete, setWorkToDelete] = useState(null);
 
-  // O estado inicial agora tem o status
   const [newWork, setNewWork] = useState({ 
     tipo: 'Relatório', 
     titulo: '', 
@@ -28,7 +25,8 @@ export default function Perfil() {
     desc: '', 
     arquivo: '', 
     nomeArquivo: '', 
-    status: 'Em andamento' 
+    status: 'Em andamento',
+    orientacoesProjeto: ''
   });
 
   useEffect(() => {
@@ -36,7 +34,6 @@ export default function Perfil() {
   }, [id]);
 
   const carregarPerfil = () => {
-    // ATENÇÃO: Se estiver testando pelo celular, mude o localhost para o seu IP aqui!
     axios.get(`https://infrawiki-api.onrender.com/api/estagiarios/${id}`)
       .then(res => { setPerfil(res.data); setFormData(res.data); })
       .catch(err => console.error(err));
@@ -81,7 +78,7 @@ export default function Perfil() {
       .then(res => { 
         setPerfil(res.data); 
         setIsAddingWork(false); 
-        setNewWork({ tipo: 'Relatório', titulo: '', data: new Date().toLocaleDateString('pt-BR'), desc: '', arquivo: '', nomeArquivo: '', status: 'Em andamento' });
+        setNewWork({ tipo: 'Relatório', titulo: '', data: new Date().toLocaleDateString('pt-BR'), desc: '', arquivo: '', nomeArquivo: '', status: 'Em andamento', orientacoesProjeto: '' });
       }).catch(() => alert("Erro ao salvar trabalho. Arquivo pode ser muito grande."));
   };
 
@@ -103,12 +100,10 @@ export default function Perfil() {
     <div className="animate-fade-in pb-20 relative">
       <Link to="/equipe" className="text-blue-500 hover:text-blue-700 text-sm mb-6 inline-block">← Voltar para a Equipe</Link>
 
-      {/* CABEÇALHO DO PERFIL */}
       <div className="bg-white rounded-3xl border border-slate-200 shadow-sm mb-10 overflow-hidden">
         <div className="w-full h-32 bg-blue-600"></div>
         <div className="px-8 pb-8 flex flex-col md:flex-row items-center md:items-start gap-6 relative -mt-16">
           
-          {/* FOTO INTERATIVA */}
           <div className="flex flex-col items-center z-10">
             <div className="relative group cursor-pointer" onClick={() => fileInputRef.current.click()} title="Alterar foto">
               <img src={perfil.foto} className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-md bg-white" alt="Avatar" />
@@ -137,7 +132,6 @@ export default function Perfil() {
         </div>
       </div>
 
-      {/* ÁREA DE TRABALHOS */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">📂 Acervo de Trabalhos</h2>
         <button onClick={() => setIsAddingWork(true)} className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 shadow-sm transition">
@@ -154,10 +148,13 @@ export default function Perfil() {
                 {proj.tipo}
               </span>
               
-              {/* === A BOLINHA DE STATUS ESTÁ AQUI === */}
               <div className="flex items-center gap-2">
                 <span 
-                  className={`w-3 h-3 rounded-full ${proj.status === 'Finalizado' ? 'bg-green-500' : 'bg-orange-500'}`} 
+                  className={`w-3 h-3 rounded-full ${
+                    proj.status === 'Finalizado' ? 'bg-green-500' : 
+                    proj.status === 'Paralisado' ? 'bg-red-500' : 
+                    'bg-orange-500'
+                  }`} 
                   title={proj.status || 'Em andamento'}
                 ></span>
                 <span className="text-xs text-slate-400 font-medium">{proj.data}</span>
@@ -185,9 +182,6 @@ export default function Perfil() {
         )}
       </div>
 
-      {/* ================= MODAIS ================= */}
-
-      {/* MODAL: EDITAR PERFIL */}
       {isEditing && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl animate-fade-in overflow-hidden">
@@ -208,7 +202,6 @@ export default function Perfil() {
         </div>
       )}
 
-      {/* MODAL: ADICIONAR TRABALHO (AGORA COM STATUS) */}
       {isAddingWork && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl animate-fade-in overflow-hidden">
@@ -218,13 +211,14 @@ export default function Perfil() {
             </div>
             <div className="p-6 space-y-4">
               
-              {/* Grid Categoria, Data e Status */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <select className="w-full border border-slate-300 p-3 rounded-lg outline-none bg-white" value={newWork.tipo} onChange={e => setNewWork({...newWork, tipo: e.target.value})}>
                   <option>Relatório</option><option>Projeto</option><option>Ideia</option>
                 </select>
                 <select className="w-full border border-slate-300 p-3 rounded-lg outline-none bg-white" value={newWork.status} onChange={e => setNewWork({...newWork, status: e.target.value})}>
-                  <option value="Em andamento">Em andamento</option><option value="Finalizado">Finalizado</option>
+                  <option value="Em andamento">Em andamento</option>
+                  <option value="Finalizado">Finalizado</option>
+                  <option value="Paralisado">Paralisado</option>
                 </select>
                 <input type="text" className="w-full border border-slate-300 p-3 rounded-lg outline-none" value={newWork.data} onChange={e => setNewWork({...newWork, data: e.target.value})} />
               </div>
@@ -232,6 +226,21 @@ export default function Perfil() {
               <input placeholder="Título do Trabalho" className="w-full border border-slate-300 p-3 rounded-lg outline-none" value={newWork.titulo} onChange={e => setNewWork({...newWork, titulo: e.target.value})} />
               <textarea placeholder="Descrição..." rows="3" className="w-full border border-slate-300 p-3 rounded-lg outline-none" value={newWork.desc} onChange={e => setNewWork({...newWork, desc: e.target.value})} />
               
+              {newWork.status === 'Paralisado' && (
+                <div className="animate-fade-in mt-4">
+                  <label className="block text-sm font-bold text-red-500 mb-1">
+                    Orientações de projeto (Motivo da paralisação)
+                  </label>
+                  <textarea 
+                    rows="2" 
+                    placeholder="Descreva o motivo da paralisação ou as orientações pendentes..."
+                    className="w-full border border-red-300 text-red-800 placeholder-red-300 bg-red-50 p-3 rounded-lg outline-none focus:ring-2 focus:ring-red-200" 
+                    value={newWork.orientacoesProjeto} 
+                    onChange={e => setNewWork({...newWork, orientacoesProjeto: e.target.value})} 
+                  />
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-1">Anexar Arquivo (Opcional)</label>
                 <input type="file" onChange={(e) => processarArquivo(e, setNewWork, newWork)} className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-slate-50" />
@@ -245,7 +254,6 @@ export default function Perfil() {
         </div>
       )}
 
-      {/* MODAL: EDITAR TRABALHO (AGORA COM BOTÃO LARANJA IGUAL AO SEU PRINT) */}
       {isEditingWork && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl animate-fade-in overflow-hidden">
@@ -260,7 +268,9 @@ export default function Perfil() {
                   <option>Relatório</option><option>Projeto</option><option>Ideia</option>
                 </select>
                 <select className="w-full border border-slate-300 p-3 rounded-lg outline-none bg-white" value={editWorkData.status} onChange={e => setEditWorkData({...editWorkData, status: e.target.value})}>
-                  <option value="Em andamento">Em andamento</option><option value="Finalizado">Finalizado</option>
+                  <option value="Em andamento">Em andamento</option>
+                  <option value="Finalizado">Finalizado</option>
+                  <option value="Paralisado">Paralisado</option>
                 </select>
                 <input type="text" className="w-full border border-slate-300 p-3 rounded-lg outline-none" value={editWorkData.data} onChange={e => setEditWorkData({...editWorkData, data: e.target.value})} />
               </div>
@@ -268,6 +278,21 @@ export default function Perfil() {
               <input className="w-full border border-slate-300 p-3 rounded-lg outline-none" value={editWorkData.titulo} onChange={e => setEditWorkData({...editWorkData, titulo: e.target.value})} />
               <textarea rows="3" className="w-full border border-slate-300 p-3 rounded-lg outline-none" value={editWorkData.desc} onChange={e => setEditWorkData({...editWorkData, desc: e.target.value})} />
               
+              {editWorkData.status === 'Paralisado' && (
+                <div className="animate-fade-in mt-4">
+                  <label className="block text-sm font-bold text-red-500 mb-1">
+                    Orientações de projeto (Motivo da paralisação)
+                  </label>
+                  <textarea 
+                    rows="2" 
+                    placeholder="Descreva o motivo da paralisação ou as orientações pendentes..."
+                    className="w-full border border-red-300 text-red-800 placeholder-red-300 bg-red-50 p-3 rounded-lg outline-none focus:ring-2 focus:ring-red-200" 
+                    value={editWorkData.orientacoesProjeto || ''} 
+                    onChange={e => setEditWorkData({...editWorkData, orientacoesProjeto: e.target.value})} 
+                  />
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-1">Substituir Arquivo (Opcional)</label>
                 <input type="file" onChange={(e) => processarArquivo(e, setEditWorkData, editWorkData)} className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-slate-50" />
@@ -275,7 +300,6 @@ export default function Perfil() {
               </div>
             </div>
             
-            {/* RODAPÉ DO MODAL EDITAR COM BOTÃO LARANJA */}
             <div className="p-6 bg-white flex justify-end gap-3 border-t border-slate-100">
               <button onClick={() => setIsEditingWork(false)} className="px-6 py-2 font-bold text-slate-600 hover:bg-slate-100 rounded-lg transition">Cancelar</button>
               <button onClick={salvarEdicaoTrabalho} className="px-6 py-2 bg-orange-500 text-white font-bold rounded-lg shadow-sm hover:bg-orange-600 transition">Atualizar</button>
@@ -284,7 +308,6 @@ export default function Perfil() {
         </div>
       )}
 
-      {/* MODAL: VER DETALHES */}
       {isViewingWork && workToView && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-xl shadow-2xl animate-fade-in overflow-hidden">
@@ -292,17 +315,29 @@ export default function Perfil() {
               <div>
                 <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-slate-100 text-slate-600 mr-2">{workToView.tipo}</span>
                 <span className="text-xs text-slate-400 font-medium">{workToView.data}</span>
+                
                 <div className="flex items-center gap-2 mt-2">
-                  <span className={`w-2 h-2 rounded-full ${workToView.status === 'Finalizado' ? 'bg-green-500' : 'bg-orange-500'}`}></span>
+                  <span className={`w-2 h-2 rounded-full ${workToView.status === 'Finalizado' ? 'bg-green-500' : workToView.status === 'Paralisado' ? 'bg-red-500' : 'bg-orange-500'}`}></span>
                   <span className="text-xs font-bold text-slate-500">{workToView.status || 'Em andamento'}</span>
                 </div>
+                
                 <h3 className="text-2xl font-bold text-slate-800 mt-3">{workToView.titulo}</h3>
               </div>
               <button onClick={() => setIsViewingWork(false)} className="text-slate-400 hover:text-slate-600 text-3xl">&times;</button>
             </div>
+            
             <div className="p-6 max-h-96 overflow-y-auto">
               <p className="text-slate-700 whitespace-pre-wrap leading-relaxed">{workToView.desc || "Nenhuma descrição."}</p>
+              
+              {workToView.status === 'Paralisado' && workToView.orientacoesProjeto && (
+                <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+                  <h4 className="text-xs font-bold text-red-600 uppercase mb-2">Orientações do Projeto</h4>
+                  <p className="text-sm text-red-800 whitespace-pre-wrap">{workToView.orientacoesProjeto}</p>
+                </div>
+              )}
+
             </div>
+            
             <div className="p-6 bg-slate-50 flex justify-between items-center border-t border-slate-100">
               {workToView.arquivo ? (
                 <a href={workToView.arquivo} download={workToView.nomeArquivo || "anexo"} className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-800 bg-blue-100 px-4 py-2 rounded-lg transition">
@@ -315,7 +350,6 @@ export default function Perfil() {
         </div>
       )}
 
-      {/* MODAL: EXCLUIR TRABALHO */}
       {isDeletingWork && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white p-8 rounded-2xl text-center max-w-sm shadow-2xl animate-fade-in">

@@ -60,7 +60,9 @@ router.post('/estagiarios/:id/projetos', async (req, res) => {
       desc: req.body.desc,
       arquivo: req.body.arquivo,
       nomeArquivo: req.body.nomeArquivo,
-      status: req.body.status || 'Em andamento' // <-- STATUS AQUI
+      status: req.body.status || 'Em andamento',
+      // ADICIONE ESTA LINHA:
+      orientacoesProjeto: req.body.orientacoesProjeto || ''
     };
     const est = await Estagiario.findById(req.params.id);
     est.projetos.push(novoTrabalho);
