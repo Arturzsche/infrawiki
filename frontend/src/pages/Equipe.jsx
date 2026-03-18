@@ -15,7 +15,7 @@ export default function Equipe() {
 
   useEffect(() => {
     // Atenção: Lembre-se de trocar localhost pelo seu IP caso esteja testando no celular!
-    axios.get('http://localhost:5000/api/estagiarios')
+    axios.get('https://infrawiki-api.onrender.com/api/estagiarios')
       .then(response => {
         setEstagiarios(response.data);
         setLoading(false);
@@ -32,7 +32,7 @@ export default function Equipe() {
         return;
     }
 
-    axios.post('http://localhost:5000/api/estagiarios', novoMembro)
+    axios.post('https://infrawiki-api.onrender.com/api/estagiarios', novoMembro)
       .then(response => {
         setEstagiarios([...estagiarios, response.data]);
         setIsAdding(false);
@@ -48,7 +48,7 @@ export default function Equipe() {
   };
 
   const removerMembro = () => {
-    axios.delete(`http://localhost:5000/api/estagiarios/${membroParaRemover._id}`)
+    axios.delete(`https://infrawiki-api.onrender.com/api/estagiarios/${membroParaRemover._id}`)
       .then(() => {
         setEstagiarios(estagiarios.filter(est => est._id !== membroParaRemover._id));
         setIsDeleting(false);

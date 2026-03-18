@@ -37,7 +37,7 @@ export default function Perfil() {
 
   const carregarPerfil = () => {
     // ATENÇÃO: Se estiver testando pelo celular, mude o localhost para o seu IP aqui!
-    axios.get(`http://localhost:5000/api/estagiarios/${id}`)
+    axios.get(`https://infrawiki-api.onrender.com/api/estagiarios/${id}`)
       .then(res => { setPerfil(res.data); setFormData(res.data); })
       .catch(err => console.error(err));
   };
@@ -47,7 +47,7 @@ export default function Perfil() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        axios.put(`http://localhost:5000/api/estagiarios/${id}`, { ...perfil, foto: reader.result })
+        axios.put(`https://infrawiki-api.onrender.com/api/estagiarios/${id}`, { ...perfil, foto: reader.result })
           .then(res => setPerfil(res.data));
       };
       reader.readAsDataURL(file);
@@ -56,12 +56,12 @@ export default function Perfil() {
 
   const removerFoto = () => {
     const padrao = `https://ui-avatars.com/api/?name=${encodeURIComponent(perfil.nome)}&background=0D8ABC&color=fff&size=256`;
-    axios.put(`http://localhost:5000/api/estagiarios/${id}`, { ...perfil, foto: padrao })
+    axios.put(`https://infrawiki-api.onrender.com/api/estagiarios/${id}`, { ...perfil, foto: padrao })
       .then(res => setPerfil(res.data));
   };
 
   const salvarEdicao = () => {
-    axios.put(`http://localhost:5000/api/estagiarios/${id}`, formData)
+    axios.put(`https://infrawiki-api.onrender.com/api/estagiarios/${id}`, formData)
       .then(res => { setPerfil(res.data); setIsEditing(false); })
       .catch(() => alert("Erro ao salvar perfil."));
   };
@@ -77,7 +77,7 @@ export default function Perfil() {
 
   const salvarTrabalho = () => {
     if(!newWork.titulo) return alert("Preencha o título!");
-    axios.post(`http://localhost:5000/api/estagiarios/${id}/projetos`, newWork)
+    axios.post(`https://infrawiki-api.onrender.com/api/estagiarios/${id}/projetos`, newWork)
       .then(res => { 
         setPerfil(res.data); 
         setIsAddingWork(false); 
@@ -87,13 +87,13 @@ export default function Perfil() {
 
   const salvarEdicaoTrabalho = () => {
     if(!editWorkData.titulo) return alert("Preencha o título!");
-    axios.put(`http://localhost:5000/api/estagiarios/${id}/projetos/${editWorkData.id}`, editWorkData)
+    axios.put(`https://infrawiki-api.onrender.com/api/estagiarios/${id}/projetos/${editWorkData.id}`, editWorkData)
       .then(res => { setPerfil(res.data); setIsEditingWork(false); })
       .catch(() => alert("Erro ao editar trabalho."));
   };
 
   const confirmarExclusaoTrabalho = () => {
-    axios.delete(`http://localhost:5000/api/estagiarios/${id}/projetos/${workToDelete.id}`)
+    axios.delete(`https://infrawiki-api.onrender.com/api/estagiarios/${id}/projetos/${workToDelete.id}`)
       .then(res => { setPerfil(res.data); setIsDeletingWork(false); setWorkToDelete(null); });
   };
 
