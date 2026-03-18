@@ -1,6 +1,44 @@
 const express = require('express');
 const router = express.Router();
-const { Estagiario } = require('../models');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { Estagiario, Usuario } = require('../models');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'chave_super_secreta_infrawiki';
+
+router.post('/auth/registro', async (req, res) => {
+  try {
+    const { email, senha } = req.body;
+    const usuarioExistente = await Usuario.findOne({ email });
+    if (usuarioExistente) return res.status(400).json({ error: 'Email já cadastrado' });
+
+    const salt = await bcrypt.genSalt(10);
+    const senhaHash = await bcrypt.hash(senha, salt);
+
+    const novoUsuario = new Usuario({ email, senha: senhaHash });
+    await novoUsuario.save();
+
+    res.json({ message: 'Usuário criado com sucesso' });
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao registrar usuário' });
+  }
+});
+
+router.post('/auth/login', async (req, res) => {
+  try {
+    const { email, senha } = req.body;
+    const usuario = await Usuario.findOne({ email });
+    if (!usuario) return res.status(400).json({ error: 'Credenciais inválidas' });
+
+    const senhaValida = await bcrypt.compare(senha, usuario.senha);
+    if (!senhaValida) return res.status(400).json({ error: 'Credenciais inválidas' });
+
+    const token = jwt.sign({ id: usuario._id }, JWT_SECRET, { expiresIn: '1d' });
+    res.json({ token, usuario: { id: usuario._id, email: usuario.email } });
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao fazer login' });
+  }
+});
 
 router.get('/estagiarios', async (req, res) => {
   try {

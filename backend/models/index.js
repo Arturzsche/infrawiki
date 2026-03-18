@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 
+const UsuarioSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  senha: { type: String, required: true }
+});
+
 const EstagiarioSchema = new mongoose.Schema({
   nome: String,
   area: String,
@@ -21,6 +26,7 @@ const EstagiarioSchema = new mongoose.Schema({
   }]
 });
 
+const Usuario = mongoose.model('Usuario', UsuarioSchema);
 const Estagiario = mongoose.model('Estagiario', EstagiarioSchema);
 
-module.exports = { Estagiario };
+module.exports = { Usuario, Estagiario };
