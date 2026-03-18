@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Equipe from './pages/Equipe';
 import Perfil from './pages/Perfil';
 import Login from './pages/Login';
+import MeuPerfil from './pages/MeuPerfil';
 
 const RotaProtegida = ({ children }) => {
   const auth = localStorage.getItem('token');
@@ -29,6 +30,7 @@ function DashboardLayout({ children }) {
   const fazerLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('usuarioEmail');
+    localStorage.removeItem('perfilId');
     navigate('/login');
   };
 
@@ -89,9 +91,13 @@ function DashboardLayout({ children }) {
                   <button className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white rounded-xl transition-colors">
                     🔑 Gerenciar Senhas
                   </button>
-                  <button className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white rounded-xl transition-colors">
+                  <Link 
+                    to="/meu-perfil" 
+                    onClick={() => setIsProfileOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white rounded-xl transition-colors"
+                  >
                     👤 Perfil do Colaborador
-                  </button>
+                  </Link>
                   <div className="h-px bg-slate-700 my-2"></div>
                   <button 
                     onClick={fazerLogout}
@@ -122,6 +128,7 @@ function App() {
         <Route path="/" element={<RotaProtegida><DashboardLayout><Home /></DashboardLayout></RotaProtegida>} />
         <Route path="/equipe" element={<RotaProtegida><DashboardLayout><Equipe /></DashboardLayout></RotaProtegida>} />
         <Route path="/estagiario/:id" element={<RotaProtegida><DashboardLayout><Perfil /></DashboardLayout></RotaProtegida>} />
+        <Route path="/meu-perfil" element={<RotaProtegida><DashboardLayout><MeuPerfil /></DashboardLayout></RotaProtegida>} />
       </Routes>
     </Router>
   );

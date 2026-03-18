@@ -10,6 +10,7 @@ const EstagiarioSchema = new mongoose.Schema({
   nome: String,
   area: String,
   foto: String,
+  capa: String,
   bio: String,
   projetos: [{
     id: String,
@@ -19,10 +20,7 @@ const EstagiarioSchema = new mongoose.Schema({
     desc: String,
     arquivo: String,
     nomeArquivo: String,
-    status: {
-      type: String,
-      default: 'Em andamento'
-    },
+    status: { type: String, default: 'Em andamento' },
     orientacoesProjeto: String
   }]
 });

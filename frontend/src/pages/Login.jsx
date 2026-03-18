@@ -18,6 +18,7 @@ export default function Login() {
         const res = await axios.post('https://infrawiki-api.onrender.com/api/auth/login', { email, senha });
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('usuarioEmail', email);
+        localStorage.setItem('perfilId', res.data.usuario.perfilId);
         navigate('/');
       } else {
         await axios.post('https://infrawiki-api.onrender.com/api/auth/registro', { email, senha });
@@ -43,13 +44,11 @@ export default function Login() {
             {isLogin ? 'Faça login para acessar a Wiki' : 'Cadastre-se para acessar o sistema'}
           </p>
         </div>
-
         {erro && (
           <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-6 text-sm font-bold text-center border border-red-200">
             {erro}
           </div>
         )}
-
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-1">E-mail</label>
@@ -62,7 +61,6 @@ export default function Login() {
               placeholder="seu.email@tcego.com.br"
             />
           </div>
-          
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-1">Senha</label>
             <input 
@@ -74,7 +72,6 @@ export default function Login() {
               placeholder="••••••••"
             />
           </div>
-
           <button 
             type="submit" 
             className="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-colors shadow-md mt-2"
@@ -82,7 +79,6 @@ export default function Login() {
             {isLogin ? 'Entrar no Sistema' : 'Cadastrar Usuário'}
           </button>
         </form>
-
         <div className="mt-8 text-center">
           <button 
             onClick={() => { setIsLogin(!isLogin); setErro(''); }} 

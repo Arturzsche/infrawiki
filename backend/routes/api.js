@@ -93,9 +93,10 @@ router.get('/estagiarios/:id', async (req, res) => {
 
 router.put('/estagiarios/:id', async (req, res) => {
   try {
-    const { nome, area, bio, foto } = req.body;
+    const { nome, area, bio, foto, capa } = req.body;
     const atualizacao = { nome, area, bio };
     if (foto) atualizacao.foto = foto;
+    if (capa) atualizacao.capa = capa;
     const est = await Estagiario.findByIdAndUpdate(req.params.id, atualizacao, { new: true });
     res.json(est);
   } catch (err) { 
