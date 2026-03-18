@@ -9,7 +9,7 @@ export default function MeuPerfil() {
   const perfilId = localStorage.getItem('perfilId');
 
   useEffect(() => {
-    if (perfilId) {
+    if (perfilId && perfilId !== 'null' && perfilId !== 'undefined') {
       axios.get(`https://infrawiki-api.onrender.com/api/estagiarios/${perfilId}`)
         .then(res => { setFormData(res.data); setLoading(false); })
         .catch(() => setLoading(false));
@@ -51,14 +51,34 @@ export default function MeuPerfil() {
     }
   };
 
+  const removerCapa = () => {
+    setFormData(prev => ({ ...prev, capa: '' }));
+  };
+
+  const removerFoto = () => {
+    const padrao = `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.nome || 'Usuario')}&background=10B981&color=fff&size=256`;
+    setFormData(prev => ({ ...prev, foto: padrao }));
+  };
+
   const salvarAlteracoes = () => {
     axios.put(`https://infrawiki-api.onrender.com/api/estagiarios/${perfilId}`, formData)
-      .then(() => alert("Perfil atualizado com sucesso!"))
+      .then(() => {
+        alert("Perfil atualizado com sucesso!");
+        window.location.reload();
+      })
       .catch(() => alert("Erro ao salvar alterações."));
   };
 
   if (loading) return <div className="p-8 text-center animate-pulse">Carregando configurações...</div>;
-  if (!perfilId) return <div className="p-8 text-center text-red-500 font-bold">Perfil não encontrado. Faça login novamente.</div>;
+  if (!perfilId || perfilId === 'null' || perfilId === 'undefined') {
+    return (
+      <div className="p-8 mt-10 max-w-lg mx-auto bg-red-50 border border-red-200 rounded-2xl text-center text-red-600 font-bold shadow-sm">
+        <div className="text-4xl mb-4">👻</div>
+        Perfil fantasma detectado!<br/><br/>
+        Sua conta foi criada antes da automação do sistema ou perdeu a conexão. Por favor, faça um novo cadastro com outro e-mail.
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-8 max-w-3xl mx-auto animate-fade-in">
@@ -68,20 +88,30 @@ export default function MeuPerfil() {
         <div>
           <label className="block text-sm font-bold text-slate-700 mb-2">Capa de Fundo</label>
           <div 
-            className="w-full h-32 rounded-xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center cursor-pointer bg-cover bg-center"
+            className="w-full h-32 rounded-xl bg-slate-100 border-2 border-dashed border-slate-300 flex flex-col items-center justify-center cursor-pointer bg-cover bg-center relative"
             style={formData.capa ? { backgroundImage: `url(${formData.capa})` } : {}}
             onClick={() => capaInputRef.current.click()}
           >
             <span className="bg-white/80 px-4 py-1 rounded text-sm font-bold shadow-sm">Alterar Capa</span>
           </div>
           <input type="file" ref={capaInputRef} className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, 'capa')} />
+          {formData.capa && (
+            <button onClick={removerCapa} className="mt-2 text-xs text-red-500 hover:text-red-700 font-bold flex items-center gap-1">
+              🗑️ Remover Capa
+            </button>
+          )}
         </div>
 
         <div>
           <label className="block text-sm font-bold text-slate-700 mb-2">Foto de Perfil</label>
           <div className="flex items-center gap-4">
             <img src={formData.foto} alt="Avatar" className="w-20 h-20 rounded-full object-cover shadow-sm border border-slate-200" />
-            <button onClick={() => fotoInputRef.current.click()} className="px-4 py-2 bg-slate-100 font-bold text-sm rounded-lg hover:bg-slate-200 transition">Trocar Foto</button>
+            <div className="flex flex-col gap-2">
+              <button onClick={() => fotoInputRef.current.click()} className="px-4 py-2 bg-slate-100 font-bold text-sm rounded-lg hover:bg-slate-200 transition">Trocar Foto</button>
+              {!formData.foto?.includes('ui-avatars') && (
+                <button onClick={removerFoto} className="px-4 py-2 bg-red-50 text-red-600 font-bold text-sm rounded-lg hover:bg-red-100 transition">Remover Foto</button>
+              )}
+            </div>
             <input type="file" ref={fotoInputRef} className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, 'foto')} />
           </div>
         </div>
