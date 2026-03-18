@@ -12,7 +12,7 @@ function App() {
           <div className="p-6 flex flex-col items-center border-b border-slate-800 mb-2">
             <Link to="/" className="group flex flex-col items-center transition-transform hover:scale-105">
               <img 
-                src="/logo-infrawiki.png" 
+                src="/logo_infrawiki.png" 
                 alt="Logo InfraWiki" 
                 className="w-32 h-auto drop-shadow-md mb-2 group-hover:drop-shadow-lg transition-all" 
               />
