@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Equipe from './pages/Equipe';
@@ -13,9 +13,22 @@ const RotaProtegida = ({ children }) => {
 function DashboardLayout({ children }) {
   const navigate = useNavigate();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [emailUsuario, setEmailUsuario] = useState('');
+  const [nomeUsuario, setNomeUsuario] = useState('');
+  const [iniciais, setIniciais] = useState('');
+
+  useEffect(() => {
+    const emailSalvo = localStorage.getItem('usuarioEmail') || 'usuario@tcego.com.br';
+    const nomeExtraido = emailSalvo.split('@')[0];
+    
+    setEmailUsuario(emailSalvo);
+    setNomeUsuario(nomeExtraido);
+    setIniciais(nomeExtraido.substring(0, 2).toUpperCase());
+  }, []);
 
   const fazerLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('usuarioEmail');
     navigate('/login');
   };
 
@@ -55,19 +68,19 @@ function DashboardLayout({ children }) {
           <div className="relative">
             <button 
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="w-10 h-10 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center hover:ring-4 ring-blue-100 transition-all"
+              className="w-10 h-10 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center hover:ring-4 ring-blue-100 transition-all uppercase"
             >
-              AE
+              {iniciais}
             </button>
 
             {isProfileOpen && (
               <div className="absolute right-0 mt-3 w-80 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden z-50 animate-fade-in text-white">
                 <div className="p-6 flex flex-col items-center border-b border-slate-700 bg-slate-900">
-                  <div className="w-20 h-20 rounded-full bg-blue-600 text-white text-3xl font-bold flex items-center justify-center mb-4 shadow-inner">
-                    AE
+                  <div className="w-20 h-20 rounded-full bg-blue-600 text-white text-3xl font-bold flex items-center justify-center mb-4 shadow-inner uppercase">
+                    {iniciais}
                   </div>
-                  <h3 className="font-bold text-lg">Artur Eduardo</h3>
-                  <p className="text-slate-400 text-sm">arturedu22@gmail.com</p>
+                  <h3 className="font-bold text-lg capitalize">{nomeUsuario}</h3>
+                  <p className="text-slate-400 text-sm">{emailUsuario}</p>
                 </div>
                 <div className="p-2 flex flex-col bg-slate-800">
                   <button className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white rounded-xl transition-colors">

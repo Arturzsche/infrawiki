@@ -17,6 +17,7 @@ export default function Login() {
       if (isLogin) {
         const res = await axios.post('https://infrawiki-api.onrender.com/api/auth/login', { email, senha });
         localStorage.setItem('token', res.data.token);
+        localStorage.setItem('usuarioEmail', email);
         navigate('/');
       } else {
         await axios.post('https://infrawiki-api.onrender.com/api/auth/registro', { email, senha });
