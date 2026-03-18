@@ -92,11 +92,11 @@ function DashboardLayout({ children }) {
           
           {userRole === 'admin' && (
             <>
-              <div className="pt-4 pb-2 px-3 text-xs font-bold text-red-500 uppercase tracking-widest">
-                Administração
+              <div className="pt-4 pb-2 px-3 text-xs font-bold text-slate-500 uppercase tracking-widest mt-4">
+                Gestão do Sistema
               </div>
-              <Link to="/admin" className="flex items-center p-3 rounded-lg hover:bg-red-900/50 text-red-400 hover:text-red-300 transition-all font-bold border border-transparent hover:border-red-800">
-                🛡️ Painel Admin
+              <Link to="/admin" className="flex items-center p-3 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition-all font-bold">
+                🔒 Administração
               </Link>
             </>
           )}
@@ -109,17 +109,19 @@ function DashboardLayout({ children }) {
           <div className="relative" ref={dropdownRef}>
             <button 
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className={`w-10 h-10 rounded-full text-white font-bold flex items-center justify-center hover:ring-4 transition-all uppercase overflow-hidden ${userRole === 'admin' ? 'bg-red-600 ring-red-100' : 'bg-blue-600 ring-blue-100'}`}
+              className={`w-10 h-10 rounded-full text-white font-bold flex items-center justify-center hover:ring-4 transition-all uppercase overflow-hidden ${userRole === 'admin' ? 'bg-slate-800 ring-slate-200' : 'bg-blue-600 ring-blue-100'}`}
             >
               {fotoUsuario ? <img src={fotoUsuario} alt="Avatar" className="w-full h-full object-cover" /> : iniciais}
             </button>
             {isProfileOpen && (
               <div className="absolute right-0 mt-3 w-80 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden z-50 animate-fade-in text-white">
                 <div className="p-6 flex flex-col items-center border-b border-slate-700 bg-slate-900">
-                  <div className={`w-20 h-20 rounded-full text-white text-3xl font-bold flex items-center justify-center mb-4 shadow-inner uppercase overflow-hidden ${userRole === 'admin' ? 'bg-red-600' : 'bg-blue-600'}`}>
+                  <div className={`w-20 h-20 rounded-full text-white text-3xl font-bold flex items-center justify-center mb-4 shadow-inner uppercase overflow-hidden ${userRole === 'admin' ? 'bg-slate-800 border-2 border-slate-600' : 'bg-blue-600'}`}>
                     {fotoUsuario ? <img src={fotoUsuario} alt="Avatar" className="w-full h-full object-cover" /> : iniciais}
                   </div>
-                  <h3 className="font-bold text-lg capitalize">{nomeUsuario} {userRole === 'admin' && '👑'}</h3>
+                  <h3 className="font-bold text-lg capitalize flex items-center gap-2">
+                    {nomeUsuario} {userRole === 'admin' && <span className="text-sm bg-slate-700 px-2 py-0.5 rounded text-slate-300">Admin</span>}
+                  </h3>
                   <p className="text-slate-400 text-sm">{emailUsuario}</p>
                 </div>
                 <div className="p-2 flex flex-col bg-slate-800">
@@ -139,7 +141,7 @@ function DashboardLayout({ children }) {
                   <div className="h-px bg-slate-700 my-2"></div>
                   <button 
                     onClick={fazerLogout}
-                    className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-400 hover:bg-slate-700 hover:text-red-300 rounded-xl transition-colors"
+                    className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-400 hover:bg-slate-700 hover:text-white rounded-xl transition-colors"
                   >
                     🚪 Finalizar Sessão
                   </button>
