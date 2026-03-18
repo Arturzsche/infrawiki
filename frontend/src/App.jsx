@@ -6,6 +6,7 @@ import Equipe from './pages/Equipe';
 import Perfil from './pages/Perfil';
 import Login from './pages/Login';
 import MeuPerfil from './pages/MeuPerfil';
+import AdminPanel from './pages/AdminPanel';
 
 const RotaProtegida = ({ children }) => {
   const auth = localStorage.getItem('token');
@@ -20,9 +21,12 @@ function DashboardLayout({ children }) {
   const [fotoUsuario, setFotoUsuario] = useState('');
   const [iniciais, setIniciais] = useState('');
   const dropdownRef = useRef(null);
+  
+  const userRole = localStorage.getItem('role');
 
   useEffect(() => {
     const emailSalvo = localStorage.getItem('usuarioEmail') || '';
+    const userLogado = localStorage.getItem('usuarioLogado') || 'Usuário';
     const perfilId = localStorage.getItem('perfilId');
     
     setEmailUsuario(emailSalvo);
@@ -34,11 +38,13 @@ function DashboardLayout({ children }) {
           setFotoUsuario(res.data.foto);
           setIniciais(res.data.nome.substring(0, 2).toUpperCase());
         })
-        .catch(err => console.error("Erro ao carregar avatar", err));
+        .catch(() => {
+          setNomeUsuario(userLogado);
+          setIniciais(userLogado.substring(0, 2).toUpperCase());
+        });
     } else {
-      const nomeExtraido = emailSalvo.split('@')[0] || 'Usuário';
-      setNomeUsuario(nomeExtraido);
-      setIniciais(nomeExtraido.substring(0, 2).toUpperCase());
+      setNomeUsuario(userLogado);
+      setIniciais(userLogado.substring(0, 2).toUpperCase());
     }
   }, []);
 
@@ -53,9 +59,7 @@ function DashboardLayout({ children }) {
   }, [dropdownRef]);
 
   const fazerLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('usuarioEmail');
-    localStorage.removeItem('perfilId');
+    localStorage.clear();
     navigate('/login');
   };
 
@@ -85,28 +89,37 @@ function DashboardLayout({ children }) {
           <Link to="/equipe" className="flex items-center p-3 rounded-lg hover:bg-slate-800 hover:text-blue-400 transition-all font-medium">
             👥 Estagiários
           </Link>
+          
+          {userRole === 'admin' && (
+            <>
+              <div className="pt-4 pb-2 px-3 text-xs font-bold text-red-500 uppercase tracking-widest">
+                Administração
+              </div>
+              <Link to="/admin" className="flex items-center p-3 rounded-lg hover:bg-red-900/50 text-red-400 hover:text-red-300 transition-all font-bold border border-transparent hover:border-red-800">
+                🛡️ Painel Admin
+              </Link>
+            </>
+          )}
         </nav>
       </aside>
 
       <main className="flex-1 overflow-y-auto">
         <header className="bg-white h-16 border-b border-slate-200 flex items-center justify-between px-8 shadow-sm">
           <span className="font-semibold text-slate-700">Setor de Manutenção Predial</span>
-
           <div className="relative" ref={dropdownRef}>
             <button 
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="w-10 h-10 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center hover:ring-4 ring-blue-100 transition-all uppercase overflow-hidden"
+              className={`w-10 h-10 rounded-full text-white font-bold flex items-center justify-center hover:ring-4 transition-all uppercase overflow-hidden ${userRole === 'admin' ? 'bg-red-600 ring-red-100' : 'bg-blue-600 ring-blue-100'}`}
             >
               {fotoUsuario ? <img src={fotoUsuario} alt="Avatar" className="w-full h-full object-cover" /> : iniciais}
             </button>
-
             {isProfileOpen && (
               <div className="absolute right-0 mt-3 w-80 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden z-50 animate-fade-in text-white">
                 <div className="p-6 flex flex-col items-center border-b border-slate-700 bg-slate-900">
-                  <div className="w-20 h-20 rounded-full bg-blue-600 text-white text-3xl font-bold flex items-center justify-center mb-4 shadow-inner uppercase overflow-hidden">
+                  <div className={`w-20 h-20 rounded-full text-white text-3xl font-bold flex items-center justify-center mb-4 shadow-inner uppercase overflow-hidden ${userRole === 'admin' ? 'bg-red-600' : 'bg-blue-600'}`}>
                     {fotoUsuario ? <img src={fotoUsuario} alt="Avatar" className="w-full h-full object-cover" /> : iniciais}
                   </div>
-                  <h3 className="font-bold text-lg capitalize">{nomeUsuario}</h3>
+                  <h3 className="font-bold text-lg capitalize">{nomeUsuario} {userRole === 'admin' && '👑'}</h3>
                   <p className="text-slate-400 text-sm">{emailUsuario}</p>
                 </div>
                 <div className="p-2 flex flex-col bg-slate-800">
@@ -154,6 +167,7 @@ function App() {
         <Route path="/equipe" element={<RotaProtegida><DashboardLayout><Equipe /></DashboardLayout></RotaProtegida>} />
         <Route path="/estagiario/:id" element={<RotaProtegida><DashboardLayout><Perfil /></DashboardLayout></RotaProtegida>} />
         <Route path="/meu-perfil" element={<RotaProtegida><DashboardLayout><MeuPerfil /></DashboardLayout></RotaProtegida>} />
+        <Route path="/admin" element={<RotaProtegida><DashboardLayout><AdminPanel /></DashboardLayout></RotaProtegida>} />
       </Routes>
     </Router>
   );

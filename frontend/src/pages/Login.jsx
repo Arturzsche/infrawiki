@@ -4,6 +4,7 @@ import axios from 'axios';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
+  const [usuario, setUsuario] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
@@ -15,16 +16,17 @@ export default function Login() {
 
     try {
       if (isLogin) {
-        const res = await axios.post('https://infrawiki-api.onrender.com/api/auth/login', { email, senha });
+        const res = await axios.post('https://infrawiki-api.onrender.com/api/auth/login', { usuario, senha });
         localStorage.setItem('token', res.data.token);
-        localStorage.setItem('usuarioEmail', email);
+        localStorage.setItem('usuarioLogado', res.data.usuario.usuario);
+        localStorage.setItem('usuarioEmail', res.data.usuario.email);
         localStorage.setItem('perfilId', res.data.usuario.perfilId);
+        localStorage.setItem('role', res.data.usuario.role);
         navigate('/');
       } else {
-        await axios.post('https://infrawiki-api.onrender.com/api/auth/registro', { email, senha });
+        await axios.post('https://infrawiki-api.onrender.com/api/auth/registro', { usuario, email, senha });
         alert('Cadastro realizado com sucesso! Faça o login.');
         setIsLogin(true);
-        setEmail('');
         setSenha('');
       }
     } catch (err) {
@@ -41,26 +43,43 @@ export default function Login() {
             {isLogin ? 'Acesso Restrito' : 'Criar Conta'}
           </h2>
           <p className="text-sm text-slate-500 mt-1">
-            {isLogin ? 'Faça login para acessar a Wiki' : 'Cadastre-se para acessar o sistema'}
+            {isLogin ? 'Entre com seu usuário e senha' : 'Cadastre-se no sistema'}
           </p>
         </div>
+
         {erro && (
           <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-6 text-sm font-bold text-center border border-red-200">
             {erro}
           </div>
         )}
+
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1">E-mail</label>
+            <label className="block text-sm font-bold text-slate-700 mb-1">Usuário</label>
             <input 
-              type="email" 
+              type="text" 
               required 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
+              value={usuario} 
+              onChange={(e) => setUsuario(e.target.value.toLowerCase().replace(/\s/g, ''))} 
               className="w-full p-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50"
-              placeholder="seu.email@tcego.com.br"
+              placeholder={isLogin ? "Seu usuário" : "Ex: joaossilva"}
             />
           </div>
+
+          {!isLogin && (
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-1">E-mail</label>
+              <input 
+                type="email" 
+                required 
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)} 
+                className="w-full p-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50"
+                placeholder="seu.email@tcego.com.br"
+              />
+            </div>
+          )}
+          
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-1">Senha</label>
             <input 
@@ -72,18 +91,14 @@ export default function Login() {
               placeholder="••••••••"
             />
           </div>
-          <button 
-            type="submit" 
-            className="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-colors shadow-md mt-2"
-          >
+
+          <button type="submit" className="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-colors shadow-md mt-2">
             {isLogin ? 'Entrar no Sistema' : 'Cadastrar Usuário'}
           </button>
         </form>
+
         <div className="mt-8 text-center">
-          <button 
-            onClick={() => { setIsLogin(!isLogin); setErro(''); }} 
-            className="text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors"
-          >
+          <button onClick={() => { setIsLogin(!isLogin); setErro(''); setSenha(''); }} className="text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors">
             {isLogin ? 'Não tem uma conta? Cadastre-se' : 'Já tem uma conta? Faça login'}
           </button>
         </div>

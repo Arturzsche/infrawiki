@@ -8,18 +8,20 @@ const JWT_SECRET = process.env.JWT_SECRET || 'chave_super_secreta_infrawiki';
 
 router.post('/auth/registro', async (req, res) => {
   try {
-    const { email, senha } = req.body;
-    const usuarioExistente = await Usuario.findOne({ email });
-    if (usuarioExistente) return res.status(400).json({ error: 'Email já cadastrado' });
+    const { usuario, email, senha } = req.body;
+    
+    const usuarioExistente = await Usuario.findOne({ $or: [{ email }, { usuario }] });
+    if (usuarioExistente) return res.status(400).json({ error: 'Email ou Usuário já cadastrado' });
 
     const salt = await bcrypt.genSalt(10);
     const senhaHash = await bcrypt.hash(senha, salt);
+    
+    const role = usuario === 'admin' ? 'admin' : 'user';
 
-    const novoUsuario = new Usuario({ email, senha: senhaHash });
+    const novoUsuario = new Usuario({ usuario, email, senha: senhaHash, role });
     await novoUsuario.save();
 
-    const nomeBase = email.split('@')[0];
-    const nomeFormatado = nomeBase.charAt(0).toUpperCase() + nomeBase.slice(1);
+    const nomeFormatado = usuario.charAt(0).toUpperCase() + usuario.slice(1);
 
     const novoEstagiario = new Estagiario({
       usuarioId: novoUsuario._id.toString(),
@@ -31,7 +33,7 @@ router.post('/auth/registro', async (req, res) => {
     });
     await novoEstagiario.save();
 
-    res.json({ message: 'Usuário e perfil criados com sucesso' });
+    res.json({ message: 'Usuário criado com sucesso' });
   } catch (err) {
     res.status(500).json({ error: 'Erro ao registrar usuário' });
   }
@@ -39,19 +41,19 @@ router.post('/auth/registro', async (req, res) => {
 
 router.post('/auth/login', async (req, res) => {
   try {
-    const { email, senha } = req.body;
-    const usuario = await Usuario.findOne({ email });
-    if (!usuario) return res.status(400).json({ error: 'Credenciais inválidas' });
+    const { usuario, senha } = req.body;
+    const userDb = await Usuario.findOne({ usuario });
+    if (!userDb) return res.status(400).json({ error: 'Credenciais inválidas' });
 
-    const senhaValida = await bcrypt.compare(senha, usuario.senha);
+    const senhaValida = await bcrypt.compare(senha, userDb.senha);
     if (!senhaValida) return res.status(400).json({ error: 'Credenciais inválidas' });
 
-    const token = jwt.sign({ id: usuario._id }, JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign({ id: userDb._id, role: userDb.role }, JWT_SECRET, { expiresIn: '1d' });
     
-    const perfil = await Estagiario.findOne({ usuarioId: usuario._id.toString() });
+    const perfil = await Estagiario.findOne({ usuarioId: userDb._id.toString() });
     const perfilId = perfil ? perfil._id : null;
 
-    res.json({ token, usuario: { id: usuario._id, email: usuario.email, perfilId } });
+    res.json({ token, usuario: { id: userDb._id, usuario: userDb.usuario, email: userDb.email, perfilId, role: userDb.role } });
   } catch (err) {
     res.status(500).json({ error: 'Erro ao fazer login' });
   }
@@ -61,34 +63,14 @@ router.get('/estagiarios', async (req, res) => {
   try {
     const estagiarios = await Estagiario.find();
     res.json(estagiarios);
-  } catch (err) { 
-    res.status(500).json({ error: 'Erro ao buscar dados' }); 
-  }
-});
-
-router.post('/estagiarios', async (req, res) => {
-  try {
-    const novo = new Estagiario({
-      nome: req.body.nome, 
-      area: req.body.area,
-      foto: `https://ui-avatars.com/api/?name=${encodeURIComponent(req.body.nome)}&background=10B981&color=fff&size=256`,
-      bio: "", 
-      projetos: []
-    });
-    await novo.save();
-    res.json(novo);
-  } catch (err) { 
-    res.status(500).json({ error: 'Erro ao criar perfil' }); 
-  }
+  } catch (err) { res.status(500).json({ error: 'Erro ao buscar dados' }); }
 });
 
 router.get('/estagiarios/:id', async (req, res) => {
   try {
     const est = await Estagiario.findById(req.params.id);
     res.json(est);
-  } catch (err) { 
-    res.status(404).json({ error: 'Não encontrado' }); 
-  }
+  } catch (err) { res.status(404).json({ error: 'Não encontrado' }); }
 });
 
 router.put('/estagiarios/:id', async (req, res) => {
@@ -99,18 +81,18 @@ router.put('/estagiarios/:id', async (req, res) => {
     if (capa) atualizacao.capa = capa;
     const est = await Estagiario.findByIdAndUpdate(req.params.id, atualizacao, { new: true });
     res.json(est);
-  } catch (err) { 
-    res.status(500).json({ error: 'Erro ao editar' }); 
-  }
+  } catch (err) { res.status(500).json({ error: 'Erro ao editar' }); }
 });
 
 router.delete('/estagiarios/:id', async (req, res) => {
   try {
+    const est = await Estagiario.findById(req.params.id);
+    if (est && est.usuarioId) {
+      await Usuario.findByIdAndDelete(est.usuarioId);
+    }
     await Estagiario.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Removido' });
-  } catch (err) { 
-    res.status(500).json({ error: 'Erro ao excluir' }); 
-  }
+    res.json({ message: 'Removido completamente' });
+  } catch (err) { res.status(500).json({ error: 'Erro ao excluir' }); }
 });
 
 router.post('/estagiarios/:id/projetos', async (req, res) => {
@@ -130,33 +112,20 @@ router.post('/estagiarios/:id/projetos', async (req, res) => {
     est.projetos.push(novoTrabalho);
     await est.save();
     res.json(est);
-  } catch (err) { 
-    res.status(500).json({ error: 'Erro ao adicionar trabalho' }); 
-  }
+  } catch (err) { res.status(500).json({ error: 'Erro ao adicionar trabalho' }); }
 });
 
 router.put('/estagiarios/:id/projetos/:projetoId', async (req, res) => {
   try {
     const est = await Estagiario.findById(req.params.id);
     const idx = est.projetos.findIndex(p => p.id === req.params.projetoId);
-    
     if (idx !== -1) {
-      est.projetos[idx].tipo = req.body.tipo !== undefined ? req.body.tipo : est.projetos[idx].tipo;
-      est.projetos[idx].titulo = req.body.titulo !== undefined ? req.body.titulo : est.projetos[idx].titulo;
-      est.projetos[idx].data = req.body.data !== undefined ? req.body.data : est.projetos[idx].data;
-      est.projetos[idx].desc = req.body.desc !== undefined ? req.body.desc : est.projetos[idx].desc;
-      est.projetos[idx].arquivo = req.body.arquivo !== undefined ? req.body.arquivo : est.projetos[idx].arquivo;
-      est.projetos[idx].nomeArquivo = req.body.nomeArquivo !== undefined ? req.body.nomeArquivo : est.projetos[idx].nomeArquivo;
-      est.projetos[idx].status = req.body.status !== undefined ? req.body.status : est.projetos[idx].status;
-      est.projetos[idx].orientacoesProjeto = req.body.orientacoesProjeto !== undefined ? req.body.orientacoesProjeto : est.projetos[idx].orientacoesProjeto;
-      
+      est.projetos[idx] = { ...est.projetos[idx], ...req.body };
       est.markModified('projetos');
       await est.save();
     }
     res.json(est);
-  } catch (err) { 
-    res.status(500).json({ error: 'Erro ao editar trabalho' }); 
-  }
+  } catch (err) { res.status(500).json({ error: 'Erro ao editar trabalho' }); }
 });
 
 router.delete('/estagiarios/:id/projetos/:projetoId', async (req, res) => {
@@ -165,9 +134,7 @@ router.delete('/estagiarios/:id/projetos/:projetoId', async (req, res) => {
     est.projetos = est.projetos.filter(p => p.id !== req.params.projetoId);
     await est.save();
     res.json(est);
-  } catch (err) { 
-    res.status(500).json({ error: 'Erro ao excluir trabalho' }); 
-  }
+  } catch (err) { res.status(500).json({ error: 'Erro ao excluir trabalho' }); }
 });
 
 module.exports = router;

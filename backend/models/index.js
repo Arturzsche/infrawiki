@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 
 const UsuarioSchema = new mongoose.Schema({
+  usuario: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
-  senha: { type: String, required: true }
+  senha: { type: String, required: true },
+  role: { type: String, default: 'user' }
 });
 
 const EstagiarioSchema = new mongoose.Schema({
