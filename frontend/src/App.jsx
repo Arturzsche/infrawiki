@@ -1,0 +1,53 @@
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import Equipe from './pages/Equipe';
+import Perfil from './pages/Perfil';
+
+function App() {
+  return (
+    <Router>
+      <div className="flex h-screen bg-slate-50 text-slate-900 font-sans">
+        
+        {/* MENU LATERAL */}
+        <aside className="w-72 bg-slate-900 text-white flex flex-col shadow-xl">
+          <div className="p-6 border-b border-slate-800">
+            <div className="text-2xl font-black tracking-tight">
+              INFRA<span className="text-blue-400 font-light">WIKI</span>
+            </div>
+            <div className="text-xs text-slate-400 font-medium mt-1">PORTFÓLIO DE MANUTENÇÃO</div>
+          </div>
+          
+          <nav className="flex-1 p-4 space-y-2 mt-4">
+            <Link to="/" className="flex items-center p-3 rounded-lg hover:bg-slate-800 hover:text-blue-400 transition-all font-medium">
+              📊 Visão Geral
+            </Link>
+            <div className="pt-4 pb-2 px-3 text-xs font-bold text-slate-500 uppercase tracking-widest text-slate-500">
+              Colaboradores
+            </div>
+            <Link to="/equipe" className="flex items-center p-3 rounded-lg hover:bg-slate-800 hover:text-blue-400 transition-all font-medium">
+              👥 Estagiários
+            </Link>
+          </nav>
+        </aside>
+
+        {/* ÁREA CENTRAL */}
+        <main className="flex-1 overflow-y-auto">
+          <header className="bg-white h-16 border-b border-slate-200 flex items-center px-8 shadow-sm">
+            <span className="font-semibold text-slate-700">Setor de Manutenção Predial</span>
+          </header>
+
+          <div className="p-8 max-w-6xl mx-auto">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/equipe" element={<Equipe />} />
+              <Route path="/estagiario/:id" element={<Perfil />} />
+            </Routes>
+          </div>
+        </main>
+
+      </div>
+    </Router>
+  );
+}
+
+export default App;
