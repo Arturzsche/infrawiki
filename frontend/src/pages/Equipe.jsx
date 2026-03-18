@@ -7,14 +7,12 @@ export default function Equipe() {
   const [loading, setLoading] = useState(true);
 
   const [isAdding, setIsAdding] = useState(false);
-  // Agora o estado inicial já vem com a primeira engenharia selecionada por padrão
   const [novoMembro, setNovoMembro] = useState({ nome: '', area: 'Engenharia Civil' });
 
   const [isDeleting, setIsDeleting] = useState(false);
   const [membroParaRemover, setMembroParaRemover] = useState(null);
 
   useEffect(() => {
-    // Atenção: Lembre-se de trocar localhost pelo seu IP caso esteja testando no celular!
     axios.get('https://infrawiki-api.onrender.com/api/estagiarios')
       .then(response => {
         setEstagiarios(response.data);
@@ -36,7 +34,6 @@ export default function Equipe() {
       .then(response => {
         setEstagiarios([...estagiarios, response.data]);
         setIsAdding(false);
-        // Reseta o formulário voltando para a opção padrão
         setNovoMembro({ nome: '', area: 'Engenharia Civil' });
       })
       .catch(error => console.error("Erro ao adicionar estagiário:", error));
@@ -71,7 +68,6 @@ export default function Equipe() {
         </button>
       </div>
 
-{/* GRID DE ESTAGIÁRIOS OU MENSAGEM VAZIA */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         
         {estagiarios.length > 0 ? (
@@ -103,7 +99,6 @@ export default function Equipe() {
             </div>
           ))
         ) : (
-          /* MENSAGEM DE EQUIPE VAZIA */
           <div className="col-span-full py-20 text-center bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl">
             <div className="text-4xl mb-4">👥</div>
             <h3 className="text-lg font-bold text-slate-700 mb-2">Nenhum perfil cadastrado</h3>
@@ -113,7 +108,6 @@ export default function Equipe() {
 
       </div>
 
-      {/* MODAL ADICIONAR ESTAGIÁRIO */}
       {isAdding && (
          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex justify-center items-center z-50 p-4">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-fade-in">
@@ -130,7 +124,6 @@ export default function Equipe() {
                       className="w-full p-3 border rounded-lg outline-none" 
                     />
                     
-                    {/* AQUI ESTÁ A LISTA DE ÁREAS ATUALIZADA */}
                     <select 
                       value={novoMembro.area} 
                       onChange={(e) => setNovoMembro({...novoMembro, area: e.target.value})} 
@@ -151,7 +144,6 @@ export default function Equipe() {
          </div>
       )}
 
-      {/* MODAL EXCLUIR */}
       {isDeleting && membroParaRemover && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center animate-fade-in">
