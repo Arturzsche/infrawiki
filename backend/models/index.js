@@ -6,6 +6,7 @@ const UsuarioSchema = new mongoose.Schema({
 });
 
 const EstagiarioSchema = new mongoose.Schema({
+  usuarioId: String,
   nome: String,
   area: String,
   foto: String,

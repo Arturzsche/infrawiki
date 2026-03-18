@@ -18,7 +18,20 @@ router.post('/auth/registro', async (req, res) => {
     const novoUsuario = new Usuario({ email, senha: senhaHash });
     await novoUsuario.save();
 
-    res.json({ message: 'Usuário criado com sucesso' });
+    const nomeBase = email.split('@')[0];
+    const nomeFormatado = nomeBase.charAt(0).toUpperCase() + nomeBase.slice(1);
+
+    const novoEstagiario = new Estagiario({
+      usuarioId: novoUsuario._id.toString(),
+      nome: nomeFormatado,
+      area: 'Engenharia Civil',
+      foto: `https://ui-avatars.com/api/?name=${encodeURIComponent(nomeFormatado)}&background=10B981&color=fff&size=256`,
+      bio: "",
+      projetos: []
+    });
+    await novoEstagiario.save();
+
+    res.json({ message: 'Usuário e perfil criados com sucesso' });
   } catch (err) {
     res.status(500).json({ error: 'Erro ao registrar usuário' });
   }
@@ -34,7 +47,11 @@ router.post('/auth/login', async (req, res) => {
     if (!senhaValida) return res.status(400).json({ error: 'Credenciais inválidas' });
 
     const token = jwt.sign({ id: usuario._id }, JWT_SECRET, { expiresIn: '1d' });
-    res.json({ token, usuario: { id: usuario._id, email: usuario.email } });
+    
+    const perfil = await Estagiario.findOne({ usuarioId: usuario._id.toString() });
+    const perfilId = perfil ? perfil._id : null;
+
+    res.json({ token, usuario: { id: usuario._id, email: usuario.email, perfilId } });
   } catch (err) {
     res.status(500).json({ error: 'Erro ao fazer login' });
   }
