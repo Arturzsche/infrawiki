@@ -75,27 +75,27 @@ function DashboardLayout({ children }) {
   return (
     <div className="flex flex-col h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden">
       
-      <header className="bg-white h-20 flex items-center justify-between px-8 border-b border-slate-200 flex-shrink-0 z-20 relative shadow-sm">
+      <header className="bg-slate-900 h-20 flex items-center justify-between px-8 border-b border-slate-800 flex-shrink-0 z-20 relative shadow-md">
         <div className="flex items-center">
           <Link to="/" className="flex items-center gap-3">
             <img 
               src="/logo-infrawiki.png" 
               alt="Logo InfraWiki" 
-              className="h-14 w-auto object-contain mix-blend-multiply" 
+              className="h-12 w-auto object-contain bg-white px-3 py-1.5 rounded-lg shadow-sm" 
             />
           </Link>
         </div>
 
         <div className="flex items-center gap-6">
           <div className="text-right hidden md:block">
-            <p className="text-base font-bold text-slate-800 capitalize">{nomeUsuario}</p>
-            <p className="text-sm text-slate-500">{userRole === 'admin' ? 'Administrador' : 'Colaborador'}</p>
+            <p className="text-base font-bold text-white capitalize">{nomeUsuario}</p>
+            <p className="text-sm text-slate-400">{userRole === 'admin' ? 'Administrador' : 'Colaborador'}</p>
           </div>
           
           <div className="relative" ref={dropdownRef}>
             <button 
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="w-11 h-11 rounded-full text-white font-bold flex items-center justify-center hover:ring-4 transition-all uppercase overflow-hidden bg-blue-800 ring-blue-100 shadow-sm border border-slate-100"
+              className="w-11 h-11 rounded-full text-white font-bold flex items-center justify-center hover:ring-4 transition-all uppercase overflow-hidden bg-blue-600 ring-blue-900 shadow-sm border border-slate-700"
             >
               {fotoUsuario ? <img src={fotoUsuario} alt="Avatar do Usuário" className="w-full h-full object-cover" /> : iniciais}
             </button>
@@ -103,7 +103,7 @@ function DashboardLayout({ children }) {
             {isProfileOpen && (
               <div className="absolute right-0 mt-3 w-72 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-50 animate-fade-in text-slate-800">
                 <div className="p-5 flex flex-col items-center border-b border-slate-100 bg-slate-50">
-                  <div className="w-16 h-16 rounded-full text-white text-2xl font-bold flex items-center justify-center mb-3 uppercase overflow-hidden bg-blue-800 shadow-inner">
+                  <div className="w-16 h-16 rounded-full text-white text-2xl font-bold flex items-center justify-center mb-3 uppercase overflow-hidden bg-blue-600 shadow-inner">
                     {fotoUsuario ? <img src={fotoUsuario} alt="Avatar" className="w-full h-full object-cover" /> : iniciais}
                   </div>
                   <h3 className="font-bold text-base capitalize flex items-center gap-2 text-slate-800">
@@ -126,15 +126,15 @@ function DashboardLayout({ children }) {
         </div>
       </header>
 
-      <div className="bg-[#1e293b] text-slate-300 text-sm font-medium px-8 py-3 flex justify-between items-center flex-shrink-0 z-10 shadow-inner border-b border-slate-800">
+      <div className="bg-white text-slate-600 text-sm font-medium px-8 py-3 flex justify-between items-center flex-shrink-0 z-10 shadow-sm border-b border-slate-200">
         <div className="flex items-center gap-2">
-          <span className="text-slate-400">Ambiente Restrito</span>
-          <span className="text-slate-600">|</span>
-          <span className="text-white font-semibold">Setor de Manutenção Predial - TCE-GO</span>
+          <span className="text-slate-500">Ambiente Restrito</span>
+          <span className="text-slate-300">|</span>
+          <span className="text-slate-800 font-semibold">Setor de Manutenção Predial - TCE-GO</span>
         </div>
         <div className="flex items-center gap-6">
-          <span className="hidden sm:block">Bem-vindo, <span className="text-white font-semibold">{nomeUsuario}</span></span>
-          <span className="text-slate-400">{dataAtual}</span>
+          <span className="hidden sm:block">Bem-vindo, <span className="text-slate-800 font-semibold">{nomeUsuario}</span></span>
+          <span className="text-slate-500">{dataAtual}</span>
         </div>
       </div>
 
