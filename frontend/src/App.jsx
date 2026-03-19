@@ -88,8 +88,8 @@ function DashboardLayout({ children }) {
 
         <div className="flex items-center gap-6">
           <div className="text-right hidden md:block">
-            <p className="text-sm font-bold text-slate-800 capitalize">{nomeUsuario}</p>
-            <p className="text-xs text-slate-500">{userRole === 'admin' ? 'Administrador' : 'Colaborador'}</p>
+            <p className="text-base font-bold text-slate-800 capitalize">{nomeUsuario}</p>
+            <p className="text-sm text-slate-500">{userRole === 'admin' ? 'Administrador' : 'Colaborador'}</p>
           </div>
           
           <div className="relative" ref={dropdownRef}>
@@ -106,10 +106,10 @@ function DashboardLayout({ children }) {
                   <div className="w-16 h-16 rounded-full text-white text-2xl font-bold flex items-center justify-center mb-3 uppercase overflow-hidden bg-blue-800 shadow-inner">
                     {fotoUsuario ? <img src={fotoUsuario} alt="Avatar" className="w-full h-full object-cover" /> : iniciais}
                   </div>
-                  <h3 className="font-bold text-sm capitalize flex items-center gap-2 text-slate-800">
-                    {nomeUsuario} {userRole === 'admin' && <span className="text-[10px] bg-slate-800 text-white px-2 py-0.5 rounded tracking-wide uppercase">Admin</span>}
+                  <h3 className="font-bold text-base capitalize flex items-center gap-2 text-slate-800">
+                    {nomeUsuario} {userRole === 'admin' && <span className="text-xs bg-slate-800 text-white px-2 py-0.5 rounded tracking-wide uppercase">Admin</span>}
                   </h3>
-                  <p className="text-slate-500 text-xs mt-1">{emailUsuario}</p>
+                  <p className="text-slate-500 text-sm mt-1">{emailUsuario}</p>
                 </div>
                 <div className="p-2 flex flex-col bg-white space-y-1">
                   <Link to="/meu-perfil" onClick={() => setIsProfileOpen(false)} className="px-4 py-2.5 text-sm font-medium text-slate-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-2">
@@ -126,7 +126,7 @@ function DashboardLayout({ children }) {
         </div>
       </header>
 
-      <div className="bg-[#1e293b] text-slate-300 text-[11px] font-medium px-8 py-2.5 flex justify-between items-center flex-shrink-0 z-10 shadow-inner border-b border-slate-800">
+      <div className="bg-[#1e293b] text-slate-300 text-sm font-medium px-8 py-3 flex justify-between items-center flex-shrink-0 z-10 shadow-inner border-b border-slate-800">
         <div className="flex items-center gap-2">
           <span className="text-slate-400">Ambiente Restrito</span>
           <span className="text-slate-600">|</span>
@@ -145,7 +145,7 @@ function DashboardLayout({ children }) {
               Visão Geral
             </Link>
             
-            <div className="px-4 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-4 mb-1">
+            <div className="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-widest mt-4 mb-1">
               Colaboradores
             </div>
             <Link to="/equipe" className="px-4 py-3 text-sm font-medium hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
@@ -154,7 +154,7 @@ function DashboardLayout({ children }) {
             
             {userRole === 'admin' && (
               <>
-                <div className="px-4 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-6 mb-1">
+                <div className="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-widest mt-6 mb-1">
                   Gestão do Sistema
                 </div>
                 <Link to="/admin" className="px-4 py-3 text-sm font-medium bg-slate-800/50 text-slate-200 hover:bg-slate-800 hover:text-white rounded-lg transition-colors border border-slate-700/50">
