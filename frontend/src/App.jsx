@@ -20,11 +20,20 @@ function DashboardLayout({ children }) {
   const [nomeUsuario, setNomeUsuario] = useState('');
   const [fotoUsuario, setFotoUsuario] = useState('');
   const [iniciais, setIniciais] = useState('');
+  const [dataAtual, setDataAtual] = useState('');
   const dropdownRef = useRef(null);
   
   const userRole = localStorage.getItem('role');
 
   useEffect(() => {
+    const formatarData = () => {
+      const data = new Date();
+      const dias = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
+      const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+      return `${dias[data.getDay()]}, ${data.getDate()} de ${meses[data.getMonth()]} de ${data.getFullYear()}`;
+    };
+    setDataAtual(formatarData());
+
     const emailSalvo = localStorage.getItem('usuarioEmail') || '';
     const userLogado = localStorage.getItem('usuarioLogado') || 'Usuário';
     const perfilId = localStorage.getItem('perfilId');
@@ -64,98 +73,100 @@ function DashboardLayout({ children }) {
   };
 
   return (
-    <div className="flex h-screen bg-slate-50 text-slate-900 font-sans">
-      <aside className="w-72 bg-slate-900 text-white flex flex-col shadow-xl">
-        <div className="p-6 flex flex-col items-center border-b border-slate-800 mb-2">
-          <Link to="/" className="group flex flex-col items-center transition-transform hover:scale-105 w-full">
-            {/* Alterado de .svg para .png aqui */}
+    <div className="flex flex-col h-screen bg-slate-100 text-slate-900 font-sans overflow-hidden">
+      
+      <header className="bg-gradient-to-r from-slate-100 to-slate-200 h-24 flex items-center justify-between px-8 border-b border-slate-300 flex-shrink-0">
+        <div className="flex items-center gap-5">
+          <Link to="/" className="flex items-center">
             <img 
               src="/logo-infrawiki.png" 
               alt="Logo InfraWiki" 
-              className="w-56 h-auto drop-shadow-md mb-3 group-hover:drop-shadow-lg transition-all" 
+              className="h-16 md:h-20 w-auto object-contain mix-blend-multiply drop-shadow-sm" 
             />
-            <span className="text-[10px] font-bold text-slate-400 tracking-widest uppercase group-hover:text-slate-300 transition-colors text-center">
-              Wiki - Manutenção Predial
-            </span>
           </Link>
         </div>
-        
-        <nav className="flex-1 p-4 space-y-2 mt-4">
-          <Link to="/" className="flex items-center p-3 rounded-lg hover:bg-slate-800 hover:text-blue-400 transition-all font-medium">
-            📊 Visão Geral
-          </Link>
-          <div className="pt-4 pb-2 px-3 text-xs font-bold text-slate-500 uppercase tracking-widest">
-            Colaboradores
-          </div>
-          <Link to="/equipe" className="flex items-center p-3 rounded-lg hover:bg-slate-800 hover:text-blue-400 transition-all font-medium">
-            👥 Estagiários
-          </Link>
-          
-          {userRole === 'admin' && (
-            <>
-              <div className="pt-4 pb-2 px-3 text-xs font-bold text-slate-500 uppercase tracking-widest mt-4">
-                Gestão do Sistema
-              </div>
-              <Link to="/admin" className="flex items-center p-3 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition-all font-bold">
-                🔒 Administração
-              </Link>
-            </>
-          )}
-        </nav>
-      </aside>
 
-      <main className="flex-1 overflow-y-auto">
-        <header className="bg-white h-16 border-b border-slate-200 flex items-center justify-between px-8 shadow-sm">
-          <span className="font-semibold text-slate-700">Setor de Manutenção Predial</span>
+        <div className="flex items-center gap-8">
           <div className="relative" ref={dropdownRef}>
             <button 
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className={`w-10 h-10 rounded-full text-white font-bold flex items-center justify-center hover:ring-4 transition-all uppercase overflow-hidden ${userRole === 'admin' ? 'bg-slate-800 ring-slate-200' : 'bg-blue-600 ring-blue-100'}`}
+              className={`w-12 h-12 rounded-full text-white font-bold flex items-center justify-center hover:ring-4 transition-all uppercase overflow-hidden bg-[#284666] ring-[#5c85ad]/30 shadow-sm text-lg`}
             >
-              {fotoUsuario ? <img src={fotoUsuario} alt="Avatar" className="w-full h-full object-cover" /> : iniciais}
+              {fotoUsuario ? <img src={fotoUsuario} alt="Avatar do Usuário" className="w-full h-full object-cover" /> : iniciais}
             </button>
             {isProfileOpen && (
-              <div className="absolute right-0 mt-3 w-80 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden z-50 animate-fade-in text-white">
-                <div className="p-6 flex flex-col items-center border-b border-slate-700 bg-slate-900">
-                  <div className={`w-20 h-20 rounded-full text-white text-3xl font-bold flex items-center justify-center mb-4 shadow-inner uppercase overflow-hidden ${userRole === 'admin' ? 'bg-slate-800 border-2 border-slate-600' : 'bg-blue-600'}`}>
+              <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-xl border border-slate-200 overflow-hidden z-50 animate-fade-in text-slate-800">
+                <div className="p-5 flex flex-col items-center border-b border-slate-100 bg-slate-50">
+                  <div className="w-16 h-16 rounded-full text-white text-2xl font-bold flex items-center justify-center mb-3 uppercase overflow-hidden bg-[#284666]">
                     {fotoUsuario ? <img src={fotoUsuario} alt="Avatar" className="w-full h-full object-cover" /> : iniciais}
                   </div>
-                  <h3 className="font-bold text-lg capitalize flex items-center gap-2">
-                    {nomeUsuario} {userRole === 'admin' && <span className="text-sm bg-slate-700 px-2 py-0.5 rounded text-slate-300">Admin</span>}
+                  <h3 className="font-bold text-sm capitalize flex items-center gap-2">
+                    {nomeUsuario} {userRole === 'admin' && <span className="text-[10px] bg-[#284666] text-white px-2 py-0.5 rounded uppercase tracking-wider">Admin</span>}
                   </h3>
-                  <p className="text-slate-400 text-sm">{emailUsuario}</p>
+                  <p className="text-slate-500 text-xs mt-1">{emailUsuario}</p>
                 </div>
-                <div className="p-2 flex flex-col bg-slate-800">
-                  <button className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white rounded-xl transition-colors">
-                    ⚙️ Configurações da Conta
-                  </button>
-                  <button className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white rounded-xl transition-colors">
-                    🔑 Gerenciar Senhas
-                  </button>
-                  <Link 
-                    to="/meu-perfil" 
-                    onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white rounded-xl transition-colors"
-                  >
-                    👤 Perfil do Colaborador
+                <div className="p-1 flex flex-col bg-white">
+                  <Link to="/meu-perfil" onClick={() => setIsProfileOpen(false)} className="px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                    Configurações do Perfil
                   </Link>
-                  <div className="h-px bg-slate-700 my-2"></div>
-                  <button 
-                    onClick={fazerLogout}
-                    className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-400 hover:bg-slate-700 hover:text-white rounded-xl transition-colors"
-                  >
-                    🚪 Finalizar Sessão
+                  <div className="h-px bg-slate-100 my-1"></div>
+                  <button onClick={fazerLogout} className="text-left px-4 py-3 text-sm font-bold text-[#b73a3a] hover:bg-red-50 transition-colors">
+                    Encerrar Sessão
                   </button>
                 </div>
               </div>
             )}
           </div>
-        </header>
-
-        <div className="p-8 max-w-6xl mx-auto">
-          {children}
         </div>
-      </main>
+      </header>
+
+      <div className="bg-[#5c85ad] text-white text-sm font-semibold px-8 py-3 flex justify-between items-center flex-shrink-0 shadow-sm">
+        <div className="flex items-center gap-8">
+          <span className="flex items-center gap-2 font-normal text-base">
+            Bem vindo, {nomeUsuario.toUpperCase()} 
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+            </svg>
+          </span>
+        </div>
+        <span className="font-normal text-sm md:text-base">{dataAtual}</span>
+      </div>
+
+      <div className="flex flex-1 overflow-hidden">
+        <aside className="w-72 bg-[#284666] text-slate-300 flex flex-col shadow-inner z-10">
+          <nav className="flex-1 py-6 flex flex-col gap-2">
+            <Link to="/" className="px-8 py-4 text-base font-medium hover:bg-[#1f3752] hover:text-white transition-colors border-l-4 border-transparent hover:border-[#5c85ad]">
+              Visão Geral
+            </Link>
+            
+            <div className="px-8 py-2 text-xs font-bold text-[#7a9ebd] uppercase tracking-widest mt-2">
+              Colaboradores
+            </div>
+            
+            <Link to="/equipe" className="px-8 py-4 text-base font-medium hover:bg-[#1f3752] hover:text-white transition-colors border-l-4 border-transparent hover:border-[#5c85ad]">
+              Equipe e Portfólio
+            </Link>
+            
+            {userRole === 'admin' && (
+              <>
+                <div className="px-8 py-2 text-xs font-bold text-[#7a9ebd] uppercase tracking-widest mt-4">
+                  Gestão do Sistema
+                </div>
+                <Link to="/admin" className="px-8 py-4 text-base font-medium hover:bg-[#1f3752] text-white transition-colors border-l-4 border-transparent hover:border-white bg-[#1f3752]/50">
+                  Painel de Administração
+                </Link>
+              </>
+            )}
+          </nav>
+        </aside>
+
+        <main className="flex-1 overflow-y-auto bg-slate-50 p-8">
+          <div className="max-w-6xl mx-auto">
+            {children}
+          </div>
+        </main>
+      </div>
+      
     </div>
   );
 }
