@@ -7,6 +7,7 @@ import Perfil from './pages/Perfil';
 import Login from './pages/Login';
 import MeuPerfil from './pages/MeuPerfil';
 import AdminPanel from './pages/AdminPanel';
+import Manuais from './pages/Manuais'; // Importamos a nova página aqui!
 
 const RotaProtegida = ({ children }) => {
   const auth = localStorage.getItem('token');
@@ -150,6 +151,14 @@ function DashboardLayout({ children }) {
             </Link>
             
             <div className="px-8 py-2 text-xs font-bold text-[#7a9ebd] uppercase tracking-widest mt-2">
+              Acervo Técnico
+            </div>
+            
+            <Link to="/manuais" className="px-8 py-4 text-base font-medium hover:bg-[#1f3752] hover:text-white transition-colors border-l-4 border-transparent hover:border-[#5c85ad]">
+              Normas e Manuais
+            </Link>
+
+            <div className="px-8 py-2 text-xs font-bold text-[#7a9ebd] uppercase tracking-widest mt-2">
               Colaboradores
             </div>
             
@@ -189,6 +198,7 @@ function App() {
         
         <Route path="/" element={<RotaProtegida><DashboardLayout><Home /></DashboardLayout></RotaProtegida>} />
         <Route path="/equipe" element={<RotaProtegida><DashboardLayout><Equipe /></DashboardLayout></RotaProtegida>} />
+        <Route path="/manuais" element={<RotaProtegida><DashboardLayout><Manuais /></DashboardLayout></RotaProtegida>} />
         <Route path="/estagiario/:id" element={<RotaProtegida><DashboardLayout><Perfil /></DashboardLayout></RotaProtegida>} />
         <Route path="/meu-perfil" element={<RotaProtegida><DashboardLayout><MeuPerfil /></DashboardLayout></RotaProtegida>} />
         <Route path="/admin" element={<RotaProtegida><DashboardLayout><AdminPanel /></DashboardLayout></RotaProtegida>} />
