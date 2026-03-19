@@ -87,16 +87,10 @@ function DashboardLayout({ children }) {
         </div>
 
         <div className="flex items-center gap-8">
-          <img 
-            src="/logo-infrawiki.png" 
-            alt="Logo Institucional" 
-            className="h-16 w-auto object-contain mix-blend-multiply opacity-90" 
-          />
-          
           <div className="relative" ref={dropdownRef}>
             <button 
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="w-11 h-11 rounded-full text-white font-bold flex items-center justify-center hover:ring-4 transition-all uppercase overflow-hidden bg-[#284666] ring-[#5c85ad]/30 shadow-sm"
+              className="w-12 h-12 rounded-full text-white font-bold flex items-center justify-center hover:ring-4 transition-all uppercase overflow-hidden bg-[#284666] ring-[#5c85ad]/30 shadow-sm text-lg"
             >
               {fotoUsuario ? <img src={fotoUsuario} alt="Avatar do Usuário" className="w-full h-full object-cover" /> : iniciais}
             </button>
@@ -112,11 +106,11 @@ function DashboardLayout({ children }) {
                   <p className="text-slate-500 text-xs mt-1">{emailUsuario}</p>
                 </div>
                 <div className="p-1 flex flex-col bg-white">
-                  <Link to="/meu-perfil" onClick={() => setIsProfileOpen(false)} className="px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                  <Link to="/meu-perfil" onClick={() => setIsProfileOpen(false)} className="px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
                     Configurações do Perfil
                   </Link>
                   <div className="h-px bg-slate-100 my-1"></div>
-                  <button onClick={fazerLogout} className="text-left px-4 py-2.5 text-sm font-bold text-[#b73a3a] hover:bg-red-50 transition-colors">
+                  <button onClick={fazerLogout} className="text-left px-4 py-3 text-sm font-bold text-[#b73a3a] hover:bg-red-50 transition-colors">
                     Encerrar Sessão
                   </button>
                 </div>
@@ -126,38 +120,39 @@ function DashboardLayout({ children }) {
         </div>
       </header>
 
-      <div className="bg-[#5c85ad] text-white text-xs font-semibold px-8 py-2 flex justify-between items-center flex-shrink-0 shadow-sm">
+      <div className="bg-[#5c85ad] text-white text-sm font-semibold px-8 py-3 flex justify-between items-center flex-shrink-0 shadow-sm">
         <div className="flex items-center gap-8">
-          <span className="uppercase tracking-widest text-[11px] font-bold">Menu</span>
-          <span className="flex items-center gap-2 font-normal">
+          <span className="flex items-center gap-2 font-normal text-base">
             Bem vindo, {nomeUsuario.toUpperCase()} 
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
             </svg>
           </span>
         </div>
-        <span className="font-normal">{dataAtual}</span>
+        <span className="font-normal text-sm">{dataAtual}</span>
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        <aside className="w-64 bg-[#284666] text-slate-300 flex flex-col shadow-inner">
-          <nav className="flex-1 py-4 flex flex-col gap-1">
-            <Link to="/" className="px-6 py-3 text-sm font-medium hover:bg-[#1f3752] hover:text-white transition-colors border-l-4 border-transparent hover:border-[#5c85ad]">
+        <aside className="w-72 bg-[#284666] text-slate-300 flex flex-col shadow-inner">
+          <nav className="flex-1 py-6 flex flex-col gap-2">
+            <Link to="/" className="px-8 py-4 text-base font-medium hover:bg-[#1f3752] hover:text-white transition-colors border-l-4 border-transparent hover:border-[#5c85ad]">
               Visão Geral
             </Link>
-            <div className="px-6 py-2 text-[10px] font-bold text-[#7a9ebd] uppercase tracking-widest mt-2">
+            
+            <div className="px-8 py-2 text-xs font-bold text-[#7a9ebd] uppercase tracking-widest mt-2">
               Colaboradores
             </div>
-            <Link to="/equipe" className="px-6 py-3 text-sm font-medium hover:bg-[#1f3752] hover:text-white transition-colors border-l-4 border-transparent hover:border-[#5c85ad]">
+            
+            <Link to="/equipe" className="px-8 py-4 text-base font-medium hover:bg-[#1f3752] hover:text-white transition-colors border-l-4 border-transparent hover:border-[#5c85ad]">
               Equipe e Portfólio
             </Link>
             
             {userRole === 'admin' && (
               <>
-                <div className="px-6 py-2 text-[10px] font-bold text-[#7a9ebd] uppercase tracking-widest mt-4">
+                <div className="px-8 py-2 text-xs font-bold text-[#7a9ebd] uppercase tracking-widest mt-4">
                   Gestão do Sistema
                 </div>
-                <Link to="/admin" className="px-6 py-3 text-sm font-medium hover:bg-[#1f3752] text-white transition-colors border-l-4 border-transparent hover:border-white bg-[#1f3752]/50">
+                <Link to="/admin" className="px-8 py-4 text-base font-medium hover:bg-[#1f3752] text-white transition-colors border-l-4 border-transparent hover:border-white bg-[#1f3752]/50">
                   Painel de Administração
                 </Link>
               </>
