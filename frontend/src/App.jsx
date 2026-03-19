@@ -67,12 +67,11 @@ function DashboardLayout({ children }) {
     <div className="flex h-screen bg-slate-50 text-slate-900 font-sans">
       <aside className="w-72 bg-slate-900 text-white flex flex-col shadow-xl">
         <div className="p-6 flex flex-col items-center border-b border-slate-800 mb-2">
-          <Link to="/" className="group flex flex-col items-center transition-transform hover:scale-105">
-            {/* Aqui estamos chamando o arquivo SVG! */}
+          <Link to="/" className="group flex flex-col items-center transition-transform hover:scale-105 w-full">
             <img 
               src="/logo-infrawiki.svg" 
               alt="Logo InfraWiki" 
-              className="w-32 h-auto drop-shadow-md mb-2 group-hover:drop-shadow-lg transition-all" 
+              className="w-56 h-auto drop-shadow-md mb-3 group-hover:drop-shadow-lg transition-all" 
             />
             <span className="text-[10px] font-bold text-slate-400 tracking-widest uppercase group-hover:text-slate-300 transition-colors text-center">
               Wiki - Manutenção Predial
