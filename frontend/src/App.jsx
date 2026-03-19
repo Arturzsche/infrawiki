@@ -68,8 +68,9 @@ function DashboardLayout({ children }) {
       <aside className="w-72 bg-slate-900 text-white flex flex-col shadow-xl">
         <div className="p-6 flex flex-col items-center border-b border-slate-800 mb-2">
           <Link to="/" className="group flex flex-col items-center transition-transform hover:scale-105 w-full">
+            {/* Alterado de .svg para .png aqui */}
             <img 
-              src="/logo-infrawiki.svg" 
+              src="/logo-infrawiki.png" 
               alt="Logo InfraWiki" 
               className="w-56 h-auto drop-shadow-md mb-3 group-hover:drop-shadow-lg transition-all" 
             />
