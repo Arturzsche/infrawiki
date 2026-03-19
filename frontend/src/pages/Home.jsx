@@ -14,7 +14,7 @@ export default function Home() {
           <h1 className="text-3xl font-bold text-slate-800 mb-4 tracking-tight uppercase">Seja Bem-vindo à InfraWiki</h1>
           <p className="text-slate-600 leading-relaxed text-lg text-justify">
             A InfraWiki é a base de conhecimento e portfólio centralizada do Setor de Manutenção Predial. 
-            Esta plataforma foi desenvolvida para documentar projetos estruturais, registrar soluções de engenharia, 
+            Esta plataforma foi desenvolvida para documentar projetos, registrar soluções de engenharia, 
             padronizar rotinas técnicas e consolidar o histórico de atividades da equipe, facilitando a consulta 
             e a gestão da infraestrutura institucional.
           </p>

@@ -77,12 +77,22 @@ function DashboardLayout({ children }) {
       
       <header className="bg-gradient-to-r from-slate-100 to-slate-200 h-24 flex items-center justify-between px-8 border-b border-slate-300 flex-shrink-0">
         <div className="flex items-center gap-5">
-          <Link to="/" className="flex items-center">
+          <Link to="/" className="flex items-center gap-4">
             <img 
               src="/logo-infrawiki.png" 
-              alt="Logo InfraWiki" 
+              alt="Logo" 
               className="h-16 md:h-20 w-auto object-contain mix-blend-multiply drop-shadow-sm" 
             />
+            <div className="flex flex-col justify-center mt-1">
+              <div className="text-4xl md:text-[2.6rem] font-black tracking-tight leading-none mb-1 font-sans">
+                <span className="text-[#4b3cfa]">Infra</span>
+                <span className="text-[#1ce4ff]">Wiki</span>
+              </div>
+              <div className="h-[3px] w-full bg-[#4b3cfa] mb-1 rounded-full"></div>
+              <span className="text-[#4b3cfa] text-[10px] md:text-xs font-bold tracking-widest uppercase">
+                Manutenção & Conhecimento Técnico
+              </span>
+            </div>
           </Link>
         </div>
 
@@ -97,7 +107,7 @@ function DashboardLayout({ children }) {
             {isProfileOpen && (
               <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-xl border border-slate-200 overflow-hidden z-50 animate-fade-in text-slate-800">
                 <div className="p-5 flex flex-col items-center border-b border-slate-100 bg-slate-50">
-                  <div className="w-16 h-16 rounded-full text-white text-2xl font-bold flex items-center justify-center mb-3 uppercase overflow-hidden bg-[#284666]">
+                  <div className={`w-16 h-16 rounded-full text-white text-2xl font-bold flex items-center justify-center mb-3 uppercase overflow-hidden bg-[#284666]`}>
                     {fotoUsuario ? <img src={fotoUsuario} alt="Avatar" className="w-full h-full object-cover" /> : iniciais}
                   </div>
                   <h3 className="font-bold text-sm capitalize flex items-center gap-2">
@@ -176,7 +186,6 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
-        
         <Route path="/" element={<RotaProtegida><DashboardLayout><Home /></DashboardLayout></RotaProtegida>} />
         <Route path="/equipe" element={<RotaProtegida><DashboardLayout><Equipe /></DashboardLayout></RotaProtegida>} />
         <Route path="/estagiario/:id" element={<RotaProtegida><DashboardLayout><Perfil /></DashboardLayout></RotaProtegida>} />
